@@ -25,12 +25,12 @@ class DetailViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        descriptionLabel.text = item.name
+        nameLabel.text = item.name
         dateCreatedLabel.text = item.dateCreatedAsString()
         purchasedSwitch.isOn = item.purchased
         datePurchasedLabel.text = "Yet to complete"
         
-        view.addSubview(descriptionLabel)
+        view.addSubview(nameLabel)
         view.addSubview(dateCreatedLabel)
         view.addSubview(purchasedSwitch)
         view.addSubview(backButton)
@@ -39,7 +39,7 @@ class DetailViewController: UIViewController{
         view.setNeedsUpdateConstraints()
     }
     
-    lazy var descriptionLabel: UILabel! = {
+    lazy var nameLabel: UILabel! = {
         let view = UILabel()
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -132,9 +132,9 @@ class DetailViewController: UIViewController{
         backButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
 
         
-        descriptionLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 30).isActive = true
-        descriptionLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
-        dateCreatedLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 10).isActive = true
+        nameLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 30).isActive = true
+        nameLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
+        dateCreatedLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10).isActive = true
         dateCreatedLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
         
         datePurchasedLabel.topAnchor.constraint(equalTo: dateCreatedLabel.bottomAnchor, constant: 10).isActive = true
