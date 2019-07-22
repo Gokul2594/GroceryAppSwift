@@ -8,12 +8,10 @@
 import UIKit
 
 class ListViewController: UIViewController {
-    var data:[GroceryItem]
+    var listManager: GroceryListManager
     
     init() {
-        let item:GroceryItem = GroceryItem(name: "Fake Data")
-        self.data = Array(repeating: item, count: 10)
-        
+        listManager = GroceryListManager()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -62,10 +60,40 @@ class ListViewController: UIViewController {
         view.setTitleColor(.white, for: .normal)
         view.backgroundColor = .black
         
-//        view.addTarget(self, action: #selector(onBackClicked), for: .touchDown)
+        view.addTarget(self, action: #selector(onNewClicked), for: .touchDown)
         
         return view
     }()
+    
+    @objc func onNewClicked() {
+        let dialog = UIAlertController(
+            title: "Add Item",
+            message: "",
+            preferredStyle: UIAlertController.Style.alert)
+        
+        dialog.addTextField { (textField) in
+            textField.placeholder = "What do you want to buy?"
+        }
+        
+        let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+        dialog.addAction(cancelButton)
+        let saveButton = UIAlertAction(title: "Save", style: UIAlertAction.Style.default, handler: {(action) in
+            if let itemField = dialog.textFields?[0] {
+                
+                if let item = itemField.text {
+                    let groceryItem = GroceryItem(name: item)
+                    self.listManager.addItem(item: groceryItem)
+                    self.tableView.reloadData()
+                }
+            }
+        })
+        dialog.addAction(saveButton)
+        present(dialog, animated: true, completion: nil)
+    }
+    
+    func reloadView() {
+        self.tableView.reloadData()
+    }
     
     override func updateViewConstraints() {
         let margins = view.layoutMarginsGuide
@@ -78,7 +106,7 @@ class ListViewController: UIViewController {
         tableView.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
         
         newButton.topAnchor.constraint(equalTo: margins.topAnchor, constant: 20).isActive = true
-        newButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
+        newButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 5).isActive = true
         super.updateViewConstraints()
     }
 }
@@ -88,7 +116,7 @@ extension ListViewController : UITableViewDelegate {
 
 extension ListViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section : Int) -> Int {
-        return data.count
+        return self.listManager.getItems().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -97,13 +125,13 @@ extension ListViewController : UITableViewDataSource {
             for: indexPath
             ) as! GroceryItemCell
         
-        cell.groceryItem = data[indexPath.row]
+        cell.groceryItem = self.listManager.getItems()[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        let item = data[indexPath.row]
+        let item = self.listManager.getItems()[indexPath.row]
         let detailView: DetailViewController = DetailViewController(item: item)
         self.present(detailView, animated: false, completion: nil)
     }

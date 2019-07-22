@@ -9,14 +9,26 @@
 import Foundation
 
 class GroceryItem {
+    let id: Int64
     let name: String
     let dateCreated: Date
     var purchased: Bool
+    var dateUpdated: Date?
     
-    init(name: String, purchased: Bool = false) {
+    init(name: String) {
+        self.id = 0
         self.name = name
         self.dateCreated = Date()
         self.purchased = false
+        self.dateUpdated = nil
+    }
+    
+    init(id: Int64, name: String, purchased: Bool, dateCreated: Date, dateUpdated: Date?) {
+        self.id = id
+        self.name = name
+        self.dateCreated = dateCreated
+        self.purchased = purchased
+        self.dateUpdated = dateUpdated
     }
     
     func purchaseItem() {

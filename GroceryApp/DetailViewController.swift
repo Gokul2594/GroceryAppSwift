@@ -11,10 +11,11 @@ import UIKit
 class DetailViewController: UIViewController{
     
     var item: GroceryItem
+    var listManager: GroceryListManager
     
     init(item: GroceryItem){
         self.item = item
-        
+        listManager = GroceryListManager()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,6 +37,7 @@ class DetailViewController: UIViewController{
         view.addSubview(backButton)
         view.addSubview(datePurchasedLabel)
         view.addSubview(editButton)
+        view.addSubview(deleteButton)
         view.setNeedsUpdateConstraints()
     }
     
@@ -65,6 +67,7 @@ class DetailViewController: UIViewController{
         let view = UISwitch()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isOn = false
+        view.isEnabled = false
         
         view.addTarget(self, action: #selector(updatePurchasedDate), for: UIControl.Event.valueChanged)
         
@@ -116,6 +119,18 @@ class DetailViewController: UIViewController{
         return view
     }()
     
+    lazy var deleteButton: UIButton! = {
+        let view = UIButton()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.setTitle("Delete", for: .normal)
+        view.setTitleColor(.white, for: .normal)
+        view.backgroundColor = .red
+        
+        view.addTarget(self, action: #selector(onDeleteClicked), for: .touchDown)
+        
+        return view
+    }()
+    
     @objc func onBackClicked() {
         self.dismiss(animated: false, completion: nil)
     }
@@ -123,6 +138,11 @@ class DetailViewController: UIViewController{
     @objc func onEditClicked() {
         let editView: EditViewController = EditViewController(item: item)
         self.present(editView, animated: false, completion: nil)
+    }
+    
+    @objc func onDeleteClicked() {
+        self.listManager.deleteItem(item: self.item)
+        self.present(ListViewController(), animated: false, completion: nil)
     }
     
     override func updateViewConstraints() {
@@ -145,9 +165,12 @@ class DetailViewController: UIViewController{
         purchasedSwitch.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
         
         editButton.topAnchor.constraint(equalTo: datePurchasedLabel.bottomAnchor, constant: 30).isActive = true
-        editButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
+        editButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 5).isActive = true
         editButton.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
         
+        deleteButton.topAnchor.constraint(equalTo: editButton.bottomAnchor, constant: 10).isActive = true
+        deleteButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
+        deleteButton.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
         
         super.updateViewConstraints()
     }
