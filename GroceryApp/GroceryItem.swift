@@ -39,6 +39,13 @@ class GroceryItem {
         let dateFormatter = DateFormatter()
         let dateFormat = "MMM dd, YYYY - h:mm a"
         dateFormatter.dateFormat = dateFormat
-        return dateFormatter.string(from: self.dateCreated)
+        return dateFormatter.string(from: self.dateCreated) + " (created)"
+    }
+    
+    func dateUpdatedAsString() -> String {
+        let dateFormatter = DateFormatter()
+        let dateFormat = "MMM dd, YYYY - h:mm a"
+        dateFormatter.dateFormat = dateFormat
+        return self.dateUpdated != nil ? dateFormatter.string(from: self.dateUpdated!) + " (updated)" : "Yet to update"
     }
 }

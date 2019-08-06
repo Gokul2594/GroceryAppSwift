@@ -10,10 +10,11 @@ import UIKit
 
 class EditViewController: UIViewController{
     var item: GroceryItem
+    var listManager: GroceryListManager
     
     init(item: GroceryItem){
         self.item = item
-        
+        listManager = GroceryListManager()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,7 +27,9 @@ class EditViewController: UIViewController{
         view.addSubview(titleLabel)
         view.addSubview(nameTextField)
         view.addSubview(purchasedSwitch)
+        view.addSubview(purchasedLabel)
         view.addSubview(backButton)
+        view.addSubview(saveButton)
         
         view.setNeedsUpdateConstraints()
     }
@@ -37,6 +40,15 @@ class EditViewController: UIViewController{
         view.translatesAutoresizingMaskIntoConstraints = false
         view.text = "Edit Item"
         view.textAlignment = .center
+        view.font = view.font.withSize(20)
+        return view
+    }()
+    
+    
+    lazy var purchasedLabel: UILabel! = {
+        let view = UILabel()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.text = "Purchased"
         view.font = view.font.withSize(20)
         return view
     }()
@@ -75,6 +87,27 @@ class EditViewController: UIViewController{
         return view
     }()
     
+    lazy var saveButton: UIButton! = {
+        let view = UIButton()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.setTitle("Save", for: .normal)
+        view.setTitleColor(.white, for: .normal)
+        view.backgroundColor = .black
+        
+        view.addTarget(self, action: #selector(onSaveClicked), for: .touchDown)
+        
+        return view
+    }()
+    
+    @objc func onSaveClicked() {
+        let editedItem = GroceryItem(id: self.item.id, name: nameTextField.text ?? "Unnamed", purchased: purchasedSwitch.isOn, dateCreated: self.item.dateCreated, dateUpdated: Date())
+        listManager.updateItem(item: editedItem)
+        
+        let detailView: DetailViewController = DetailViewController(item: editedItem)
+        
+        self.present(detailView, animated: false, completion: nil)
+    }
+    
     @objc func onBackClicked() {
         self.dismiss(animated: false, completion: nil)
     }
@@ -94,8 +127,14 @@ class EditViewController: UIViewController{
         nameTextField.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
         
         purchasedSwitch.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 20).isActive = true
-        purchasedSwitch.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
         purchasedSwitch.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
+        
+        purchasedLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 20).isActive = true
+        purchasedLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
+        
+        saveButton.topAnchor.constraint(equalTo: purchasedSwitch.bottomAnchor, constant: 20).isActive = true
+        saveButton.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 10).isActive = true
+        saveButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: 10).isActive = true
         
         super.updateViewConstraints()
     }

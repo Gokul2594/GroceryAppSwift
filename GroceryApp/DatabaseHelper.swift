@@ -104,6 +104,7 @@ class DatabaseHelper {
         do {
             let selectedItem = groceries.filter(id == grocery.id)
             try db!.run(selectedItem.update(
+                name <- grocery.name,
                 purchased <- grocery.purchased,
                 dateUpdated <- grocery.dateUpdated
             ))

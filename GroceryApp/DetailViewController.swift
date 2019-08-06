@@ -28,8 +28,6 @@ class DetailViewController: UIViewController{
         
         nameLabel.text = item.name
         dateCreatedLabel.text = item.dateCreatedAsString()
-        purchasedSwitch.isOn = item.purchased
-        datePurchasedLabel.text = "Yet to complete"
         
         view.addSubview(nameLabel)
         view.addSubview(dateCreatedLabel)
@@ -66,25 +64,25 @@ class DetailViewController: UIViewController{
     lazy var purchasedSwitch: UISwitch! = {
         let view = UISwitch()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.isOn = false
+        view.isOn = self.item.purchased
         view.isEnabled = false
         
-        view.addTarget(self, action: #selector(updatePurchasedDate), for: UIControl.Event.valueChanged)
+        //view.addTarget(self, action: #selector(updatePurchasedDate), for: UIControl.Event.valueChanged)
         
         return view
     }()
     
-    @objc func updatePurchasedDate(mySwitch: UISwitch){
-        if(mySwitch.isOn){
-            let dateFormatter = DateFormatter()
-            let dateFormat = "MMM dd, YYYY - h:mm a"
-            dateFormatter.dateFormat = dateFormat
-            datePurchasedLabel.text = dateFormatter.string(from: Date())
-        }
-        else{
-            datePurchasedLabel.text = "Yet to purchase"
-        }
-    }
+//    @objc func updatePurchasedDate(mySwitch: UISwitch){
+//        if(mySwitch.isOn){
+//            let dateFormatter = DateFormatter()
+//            let dateFormat = "MMM dd, YYYY - h:mm a"
+//            dateFormatter.dateFormat = dateFormat
+//            datePurchasedLabel.text = dateFormatter.string(from: Date())
+//        }
+//        else{
+//            datePurchasedLabel.text = "Yet to purchase"
+//        }
+//    }
     
     lazy var backButton: UIButton! = {
         let view = UIButton()
@@ -102,6 +100,7 @@ class DetailViewController: UIViewController{
         let view = UILabel()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.textAlignment = .left
+        view.text = self.item.dateUpdatedAsString()
         view.font = view.font.withSize(20)
         
         return view
@@ -132,7 +131,7 @@ class DetailViewController: UIViewController{
     }()
     
     @objc func onBackClicked() {
-        self.dismiss(animated: false, completion: nil)
+        self.present(ListViewController(), animated: false, completion: nil)
     }
     
     @objc func onEditClicked() {
